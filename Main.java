@@ -59,7 +59,9 @@ public class Main {
                 NoteList noteList = noteStore.findNotes(filter, 0, 100000);
                 List<Note> notes = noteList.getNotes();
                 for (Note note : notes) {
-                    String fixed_title = note.getTitle().replace(' ', '_').replace('/', '-');
+                    String fixed_title =
+                        note.getTitle().replace(' ', '_').replace('/', '-')
+                        + ".xhtml";
                     Path notePath = notebookPath.resolve(fixed_title);
                     // Note has .getContent, but it doesn't actually do anything
                     String noteContent = noteStore.getNoteContent(note.getGuid());
