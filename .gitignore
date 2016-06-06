@@ -1,4 +1,2 @@
-dev_token.py
 *.class
-*.jar
-*/target/*
+token.txt
