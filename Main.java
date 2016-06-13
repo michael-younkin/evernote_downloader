@@ -18,6 +18,25 @@ import com.evernote.edam.type.Note;
 import com.evernote.edam.type.NoteSortOrder;
 
 public class Main {
+
+    /**
+     * Convert Evernote XHTML to HTML. Yes, this is horrible... but it works.
+     */
+    private static String xhtmlToHtml(String title, String content) {
+        String newPreamble = "<!DOCTYPE html><html><head><title>" +
+            title + "</title></head><body";
+        String oldPreamble = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+            "<!DOCTYPE en-note SYSTEM " +
+            "\"http://xml.evernote.com/pub/enml2.dtd\"><en-note";
+        content = content.replace(oldPreamble, newPreamble);
+
+        String oldPostfix = "</en-note>";
+        String newPostfix = "</body></html>";
+        content = content.replace(oldPostfix, newPostfix);
+
+        return content;
+    }
+
     public static void main(String[] args) {
         if (args.length != 1) {
             System.err.println("USAGE: java Main OUTPUT_DIR");
@@ -66,7 +85,8 @@ public class Main {
                     // Note has .getContent, but it doesn't actually do anything
                     String noteContent = noteStore.getNoteContent(note.getGuid());
                     if (noteContent != null) {
-                        Files.write(notePath, noteContent.getBytes());
+                        String fixedContent = xhtmlToHtml(note.getTitle(), noteContent);
+                        Files.write(notePath, fixedContent.getBytes());
                         System.out.println(" * " + note.getTitle());
                     } else {
                         System.out.println(" x " + note.getTitle());
